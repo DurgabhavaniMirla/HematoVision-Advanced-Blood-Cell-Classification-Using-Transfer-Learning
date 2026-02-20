@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HematoVision AI Dashboard</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+        }
+        .dashboard {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 2px solid {{ theme_color }}; /* Dynamic Border Color */
+            box-shadow: 0 0 30px {{ theme_color }}44; /* Dynamic Glow */
+            border-radius: 30px;
+            padding: 40px; width: 90%; max-width: 500px;
+            text-align: center;
+        }
+        .img-container {
+            position: relative; display: inline-block;
+            border-radius: 20px; overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.1);
+        }
+        /* Scanning Animation Line */
+        .scanner-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: {{ theme_color }};
+            box-shadow: 0 0 15px {{ theme_color }};
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+        .result-title {
+            font-size: 38px; font-weight: 900; margin: 20px 0 10px;
+            text-shadow: 0 0 10px {{ theme_color }};
+            letter-spacing: 3px;
+        }
+        .confidence-meter {
+            background: rgba(255,255,255,0.1);
+            height: 12px; border-radius: 10px; margin: 25px 0;
+            position: relative;
+        }
+        .confidence-fill {
+            height: 100%; border-radius: 10px;
+            background: linear-gradient(90deg, transparent, {{ theme_color }});
+            box-shadow: 0 0 15px {{ theme_color }};
+            width: 0; transition: width 2s ease-out;
+        }
+        .status-pill {
+            display: inline-block; padding: 8px 20px;
+            background: {{ theme_color }};
+            border-radius: 50px; font-weight: bold; font-size: 12px;
+            box-shadow: 0 5px 15px {{ theme_color }}66;
+        }
+        .insight-box {
+            background: rgba(255,255,255,0.03);
+            border-left: 4px solid {{ theme_color }};
+            padding: 15px; margin-top: 25px; text-align: left;
+            font-size: 14px; line-height: 1.5; color: #cbd5e0;
+        }
+        .back-btn {
+            display: inline-block; margin-top: 30px;
+            color: white; text-decoration: none; font-size: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 30px; border-radius: 50px;
+            transition: 0.3s;
+        }
+        .back-btn:hover { background: white; color: #1a1a2e; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <p style="text-transform: uppercase; font-size: 12px; letter-spacing: 4px; color: #888;">Diagnostic Analysis</p>
+        
+        <div class="img-container">
+            <div class="scanner-line"></div>
+            <img src="data:image/png;base64,{{ img_data }}" width="320" style="display: block;">
+        </div>
+
+        <div class="result-title">{{ label }}</div>
+        
+        <div class="status-pill">
+            {% if score_value >= 85 %} PROCESSED: HIGH ACCURACY
+            {% elif score_value >= 70 %} PROCESSED: VERIFICATION ADVISED
+            {% else %} PROCESSED: MANUAL REVIEW REQUIRED
+            {% endif %}
+        </div>
+
+        <div class="confidence-meter">
+            <div id="fill" class="confidence-fill" style="width: {{ score_value }}%;"></div>
+        </div>
+        <p style="font-size: 20px; font-weight: bold;">{{ score_value }}% Match</p>
+
+        <div class="insight-box">
+            <strong>AI INSIGHT:</strong> This sample shows morphological characteristics typical of 
+            {{ label|lower }}s. Analysis performed using MobileNetV2 Deep Learning architecture.
+        </div>
+
+        <a href="/" class="back-btn">New Analysis</a>
+    </div>
+
+</body>
+</html>
